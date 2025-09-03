@@ -1,6 +1,5 @@
 name = "ts-webhook-proxy"
-main = "functions/api/[[path]].ts"
-compatibility_date = "2025-09-03"   # update to today’s date
+compatibility_date = "2025-09-03"
 
 [[kv_namespaces]]
 binding = "SIGNALS"
