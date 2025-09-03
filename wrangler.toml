@@ -3,7 +3,7 @@ compatibility_date = "2025-09-03"
 
 [[kv_namespaces]]
 binding = "SIGNALS"
-id = "REPLACE_ME_AFTER_BINDING"
+id = "f4a5ae2d3cd04eefb912907ae27eb326"
 
 [vars]
 TS_OPEN_URL_TEMPLATE = "https://charts.trendspider.com/?symbol={symbol}"
