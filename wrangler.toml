@@ -1,9 +1,4 @@
-name = "ts-webhook-proxy"
-compatibility_date = "2025-09-03"
-
-[[kv_namespaces]]
-binding = "SIGNALS"
-id = "f4a5ae2d3cd04eefb912907ae27eb326"
-
 [vars]
 TS_OPEN_URL_TEMPLATE = "https://charts.trendspider.com/?symbol={symbol}"
+TS_WEBHOOK_SECRET = "f4a5ae2d3cd04eefb912907ae27eb326"
+
