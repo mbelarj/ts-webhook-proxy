@@ -1,5 +1,6 @@
 name = "ts-webhook-proxy"
-compatibility_date = "2024-01-01"
+main = "functions/api/[[path]].ts"
+compatibility_date = "2025-09-03"   # update to today’s date
 
 [[kv_namespaces]]
 binding = "SIGNALS"
@@ -7,4 +8,3 @@ id = "REPLACE_ME_AFTER_BINDING"
 
 [vars]
 TS_OPEN_URL_TEMPLATE = "https://charts.trendspider.com/?symbol={symbol}"
-
