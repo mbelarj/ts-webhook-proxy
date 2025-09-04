@@ -1,42 +1,50 @@
 // functions/api/signals.ts
-function json(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "content-type": "application/json",
-      "access-control-allow-origin": "*",
-      "access-control-allow-methods": "GET,POST,OPTIONS",
-      "access-control-allow-headers": "content-type",
-    },
-  });
+
+type Env = { SIGNALS: KVNamespace };
+
+function json(data: unknown, init: ResponseInit = {}) {
+  const headers = new Headers(init.headers);
+  headers.set("content-type", "application/json");
+  headers.set("access-control-allow-origin", "*");
+  headers.set("access-control-allow-methods", "GET,POST,OPTIONS");
+  headers.set("access-control-allow-headers", "content-type");
+  return new Response(JSON.stringify(data), { ...init, headers });
 }
 
-export async function onRequest({ request, env }: { request: Request; env: { SIGNALS: KVNamespace } }) {
+export const onRequestOptions: PagesFunction = async () => json({ ok: true });
+
+export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const url = new URL(request.url);
+  const symbol = url.searchParams.get("symbol");
 
-  if (request.method === "OPTIONS") return json(null, 204);
-
-  if (request.method === "GET") {
-    const symbol = url.searchParams.get("symbol");
-    if (symbol) {
-      const val = await env.SIGNALS.get(symbol, "json");
-      return json(val ?? { error: "not found" }, val ? 200 : 404);
-    }
-    const list = await env.SIGNALS.list();
-    const keys = list.keys.map(k => k.name);
-    const vals = await Promise.all(keys.map(k => env.SIGNALS.get(k, "json")));
-    const out = Object.fromEntries(keys.map((k, i) => [k, vals[i]]));
-    return json(out);
+  if (symbol) {
+    const value = await env.SIGNALS.get(symbol, "json");
+    return json(value ?? null, { status: value ? 200 : 404 });
   }
 
-  if (request.method === "POST") {
-    const body = await request.json().catch(() => null);
-    if (!body || !body.symbol) return json({ error: "symbol required" }, 400);
+  // List all, return latest state per key
+  const { keys } = await env.SIGNALS.list();
+  const results: unknown[] = [];
+  for (const k of keys) {
+    const v = await env.SIGNALS.get(k.name, "json");
+    if (v) results.push({ symbol: k.name, ...v });
+  }
+  return json(results);
+};
 
-    const value = { ...body, ts: Date.now() };
-    await env.SIGNALS.put(body.symbol, JSON.stringify(value));
-    return json({ ok: true });
+export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
+  let body: any;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: "invalid json" }, { status: 400 });
   }
 
-  return json({ error: "Method not allowed" }, 405);
-}
+  if (!body?.symbol) {
+    return json({ error: "symbol required" }, { status: 400 });
+  }
+
+  const record = { ...body, ts: Date.now() };
+  await env.SIGNALS.put(body.symbol, JSON.stringify(record));
+  return json({ ok: true });
+};
