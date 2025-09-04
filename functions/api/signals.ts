@@ -1,3 +1,4 @@
+// functions/api/signals.ts
 export const onRequest: PagesFunction = async ({ request, env }) => {
   const kv = env.SIGNALS as KVNamespace;
 
@@ -22,9 +23,9 @@ export const onRequest: PagesFunction = async ({ request, env }) => {
   if (request.method === "POST") {
     let body: any = null;
     try { body = await request.json(); } catch {}
-    if (!body?.symbol) return json({ ok:false, error:"symbol required" }, { status: 400 });
+    if (!body?.symbol) return json({ ok: false, error: "symbol required" }, { status: 400 });
     await kv.put(body.symbol, JSON.stringify(body));
-    return json({ ok:true });
+    return json({ ok: true });
   }
 
   return new Response(null, { status: 405 });
