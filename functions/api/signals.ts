@@ -1,39 +1,31 @@
-// functions/api/signals.ts
 export const onRequest: PagesFunction = async ({ request, env }) => {
   const kv = env.SIGNALS as KVNamespace;
+
+  const json = (data: unknown, init: ResponseInit = {}) =>
+    new Response(JSON.stringify(data), {
+      headers: { "content-type": "application/json" },
+      ...init,
+    });
 
   if (request.method === "GET") {
     const { searchParams } = new URL(request.url);
     const symbol = searchParams.get("symbol");
-
     if (symbol) {
-      const val = await kv.get(symbol);
-      return new Response(val ?? "null", {
-        headers: { "content-type": "application/json" },
-        status: val ? 200 : 404,
-      });
+      const item = await kv.get(symbol, "json");
+      return json(item ?? null);
     }
-
-    // list all keys
     const list = await kv.list();
-    return new Response(JSON.stringify(list.keys), {
-      headers: { "content-type": "application/json" },
-    });
+    const items = await Promise.all(list.keys.map(k => kv.get(k.name, "json")));
+    return json(items.filter(Boolean));
   }
 
   if (request.method === "POST") {
-    const body = await request.json();
-    if (!body?.symbol) {
-      return new Response(JSON.stringify({ ok: false, error: "symbol required" }), {
-        headers: { "content-type": "application/json" },
-        status: 400,
-      });
-    }
+    let body: any = null;
+    try { body = await request.json(); } catch {}
+    if (!body?.symbol) return json({ ok:false, error:"symbol required" }, { status: 400 });
     await kv.put(body.symbol, JSON.stringify(body));
-    return new Response(JSON.stringify({ ok: true }), {
-      headers: { "content-type": "application/json" },
-    });
+    return json({ ok:true });
   }
 
-  return new Response("Method not allowed", { status: 405 });
+  return new Response(null, { status: 405 });
 };
