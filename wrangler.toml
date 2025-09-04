@@ -1,7 +1,7 @@
 name = "ts-webhook-proxy"
 compatibility_date = "2025-09-04"
 
-# Tell Wrangler that this is a Pages project
+# Tell Wrangler this is a Pages project, not a Worker
 pages_build_output_dir = "."
 
 [[kv_namespaces]]
@@ -9,4 +9,4 @@ binding = "SIGNALS"
 id = "f4a5ae2d3cd04eefb912907ae27eb326"
 
 [vars]
-TS_OPEN_URL_TEMPLATE = "https://charts.trendspider.com/?symbol={symbol}"
+TS_WEBHOOK_SECRET = "my-strong-secret-123"
