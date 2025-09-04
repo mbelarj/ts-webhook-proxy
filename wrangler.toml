@@ -1,7 +1,7 @@
 name = "ts-webhook-proxy"
 compatibility_date = "2025-09-04"
 
-# Tell Cloudflare Pages where your functions live
+# Tell Wrangler that this is a Pages project
 pages_build_output_dir = "."
 
 [[kv_namespaces]]
