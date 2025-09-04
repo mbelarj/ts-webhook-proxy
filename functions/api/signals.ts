@@ -15,17 +15,21 @@ export const onRequestOptions: PagesFunction = async () => json({ ok: true });
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const url = new URL(request.url);
   const symbol = url.searchParams.get("symbol");
+
+  // GET /api/signals?symbol=TSLA -> single item (404 if missing)
   if (symbol) {
     const value = await env.SIGNALS.get(symbol, "json");
-    return json(value ?? null, { status: value ? 200 : 404 });
+    return value ? json(value) : json({ error: "not found" }, { status: 404 });
   }
+
+  // GET /api/signals -> list everything we have
   const { keys } = await env.SIGNALS.list();
-  const out: unknown[] = [];
+  const rows: unknown[] = [];
   for (const k of keys) {
     const v = await env.SIGNALS.get(k.name, "json");
-    if (v) out.push({ symbol: k.name, ...v });
+    if (v) rows.push({ symbol: k.name, ...v });
   }
-  return json(out);
+  return json(rows);
 };
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
