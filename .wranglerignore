@@ -5,3 +5,5 @@ node_modules
 *.m4a
 .Trash
 Dropbox
+Downloads/
+Trash/
