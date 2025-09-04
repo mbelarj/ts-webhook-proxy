@@ -2,8 +2,8 @@ node_modules
 .DS_Store
 *.log
 *.pkg
+*.mp4
 *.m4a
-.Trash
+Downloads
 Dropbox
-Downloads/
-Trash/
+.Trash
