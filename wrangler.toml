@@ -1,6 +1,6 @@
 name = "ts-webhook-proxy"
-compatibility_date = "2025-09-04"
+compatibility_date = "2025-09-03"
 
 [[kv_namespaces]]
 binding = "SIGNALS"
-id = "f4a5ae2d3cd04eefb912907ae27eb326" # your namespace ID
+id = "f4a5ae2d3cd04eefb912907ae27eb326"  # <- your actual ID
