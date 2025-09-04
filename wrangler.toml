@@ -1,3 +1,7 @@
+name = "ts-webhook-proxy"
+compatibility_date = "2024-09-04"
+pages_build_output_dir = "."
+
 [[kv_namespaces]]
 binding = "SIGNALS"
-id = "f4a5ae2d3cd04eefb912907ae27eb326" # your actual namespace id
+id = "YOUR_NAMESPACE_ID_HERE"   # from `npx wrangler kv namespace list`
