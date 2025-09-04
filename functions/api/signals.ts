@@ -11,5 +11,3 @@ export const onRequestPost: PagesFunction = async ({ request }) => {
     headers: { "content-type": "application/json" },
   });
 };
-export const onRequestGet: PagesFunction = async ({ request, env }) => { /* ... */ };
-export const onRequestPost: PagesFunction = async ({ request, env }) => { /* ... */ };
